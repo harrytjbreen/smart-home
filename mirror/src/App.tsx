@@ -1,9 +1,10 @@
 import React from 'react';
+import Time from "./Components/Time";
 
 const App = () => {
   return (
     <div>
-      Home Page
+      <Time/>
     </div>
   );
 };
