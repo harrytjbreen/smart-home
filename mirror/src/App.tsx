@@ -1,10 +1,12 @@
 import React from 'react';
 import Time from "./Components/Time";
+import "./scss/main.scss"
+import Dragable from "./Components/Dragable";
 
 const App = () => {
   return (
     <div>
-      <Time/>
+      <Dragable initialPosition={[0,0]}/>
     </div>
   );
 };
