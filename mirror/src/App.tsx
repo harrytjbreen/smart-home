@@ -6,7 +6,9 @@ import Dragable from "./Components/Dragable";
 const App = () => {
   return (
     <div>
-      <Dragable initialPosition={[0,0]}/>
+      <Dragable initialPosition={[0,700]}>
+        <Time/>
+      </Dragable>
     </div>
   );
 };

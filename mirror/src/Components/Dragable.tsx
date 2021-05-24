@@ -1,6 +1,5 @@
 import * as React from "react"
 import {CSSProperties, useState} from "react";
-import Time from "./Time";
 
 type Position = [number, number]
 
@@ -10,7 +9,7 @@ interface Props {
 
 const dragImg = new Image(0,0);
 
-const Dragable: React.FC<Props> = ({initialPosition}) => {
+const Dragable: React.FC<Props> = ({initialPosition, children}) => {
 
   const [position, setPosition] = useState<Position>(initialPosition);
   const [offset, setOffset] = useState<Position>([0,0]);
@@ -18,7 +17,6 @@ const Dragable: React.FC<Props> = ({initialPosition}) => {
   const onDrag = (e: any) => {
     if(!e.clientX && !e.clientY) return;
     setPosition([e.clientY - offset[0], e.clientX - offset[1]])
-    console.log(e)
   }
 
   const onClick = (e: any) => {
@@ -33,7 +31,7 @@ const Dragable: React.FC<Props> = ({initialPosition}) => {
 
   return (
     <div draggable id={"draggable"} className={"draggable"} onDragStart={onClick} onDrag={onDrag} style={Style}>
-      <Time/>
+      {children}
     </div>
   )
 }
