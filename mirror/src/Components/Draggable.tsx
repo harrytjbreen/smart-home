@@ -9,7 +9,7 @@ interface Props {
 
 const dragImg = new Image(0,0);
 
-const Dragable: React.FC<Props> = ({initialPosition, children}) => {
+const Draggable: React.FC<Props> = ({initialPosition, children}) => {
 
   const [position, setPosition] = useState<Position>(initialPosition);
   const [offset, setOffset] = useState<Position>([0,0]);
@@ -36,4 +36,4 @@ const Dragable: React.FC<Props> = ({initialPosition, children}) => {
   )
 }
 
-export default Dragable;
+export default Draggable;
