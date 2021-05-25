@@ -1,14 +1,19 @@
 import React from 'react';
 import Time from "./Components/Time";
 import "./scss/main.scss"
-import Dragable from "./Components/Dragable";
+import Draggable from "./Components/Draggable";
+import Spotify from "./Components/Spotify";
 
 const App = () => {
+
   return (
     <div>
-      <Dragable initialPosition={[0,700]}>
+      <Draggable initialPosition={[0,700]}>
         <Time/>
-      </Dragable>
+      </Draggable>
+      <Draggable initialPosition={[50,300]}>
+        <Spotify/>
+      </Draggable>
     </div>
   );
 };
