@@ -8,11 +8,11 @@ const App = () => {
 
   return (
     <div>
-      <Draggable initialPosition={[0,700]}>
-        <Time/>
-      </Draggable>
       <Draggable initialPosition={[50,300]}>
         <Spotify/>
+      </Draggable>
+      <Draggable initialPosition={[0,700]}>
+        <Time/>
       </Draggable>
     </div>
   );

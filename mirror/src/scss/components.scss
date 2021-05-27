@@ -10,3 +10,28 @@ body{
   font-weight: lighter;
   font-size: 5rem;
 }
+
+.spotify {
+  background-color: #1a1a1a;
+  padding: 1.5vw;
+  border-radius: 1.5rem;
+  display: grid;
+  grid-gap: 1rem;
+  width: 30vw;
+  min-width: fit-content;
+  & img {
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    grid-column-start: 1;
+    grid-row-start: 1;
+  }
+  & .track {
+    grid-column-start: 2;
+  }
+  & .bar {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 2;
+  }
+}
