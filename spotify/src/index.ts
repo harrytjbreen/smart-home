@@ -1,6 +1,7 @@
 import express, {Request, Response} from "express";
 import axios from "axios";
 import bodyParser from "body-parser";
+import cors from "cors";
 import * as querystring from "querystring";
 require('dotenv').config();
 const app = express();
@@ -13,7 +14,7 @@ const scope = process.env.SCOPE;
 const frontEndURL = process.env.FRONTEND_URL;
 
 app.use(bodyParser.json());
-
+app.use(cors());
 
 app.get("/", (req: Request, res: Response) => {
   res.sendStatus(200);
@@ -42,6 +43,13 @@ app.get("/callback", (req: Request, res: Response) => {
         res.redirect(`${frontEndURL}/?access=${data.access_token}&refresh=${data.refresh_token}&expires=${data.expires_in}`)
       })
       .catch(err => console.log(err))
+});
+
+app.options('/refresh', (req: Request, res: Response) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.end();
 });
 
 app.post("/refresh", (req: Request, res: Response) => {
