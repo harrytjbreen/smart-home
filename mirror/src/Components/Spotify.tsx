@@ -15,13 +15,22 @@ interface State {
   songName: string;
   image: string;
   artists: string[];
-  show: boolean
+  time: Date;
+  isPlaying: boolean;
 }
 
 const Spotify: React.FC = (props) => {
 
   const [tokens, setTokens] = useState({} as Tokens);
-  const [state, setState] = useState<State>({artists: [], duration: 0, image: "", progress: 0, songName: "", show: false});
+  const [state, setState] = useState<State>({
+    isPlaying: false,
+    artists: [],
+    duration: 0,
+    image: "",
+    progress: 0,
+    songName: "",
+    time: new Date(0)
+  });
 
   const parseParams = (querystring: string): Tokens => {
     const params = new URLSearchParams(querystring);
@@ -71,12 +80,13 @@ const Spotify: React.FC = (props) => {
         return;
       }
       setState({
-        duration: res.data.item.duration_ms,
-        image: res.data.item.album.images[1].url,
-        progress: res.data.progress_ms,
-        songName: res.data.item.name,
-        artists: res.data.item.artists.map((item: any) => item.name),
-        show: true
+        duration: res.data?.item?.duration_ms,
+        image: res.data?.item?.album.images[1].url,
+        progress: res.data?.progress_ms,
+        songName: res.data?.item?.name,
+        artists: res.data?.item?.artists.map((item: any) => item.name),
+        time: new Date(),
+        isPlaying: res.data?.is_playing
       })
     } catch (err) {
       console.log(err);
@@ -97,32 +107,35 @@ const Spotify: React.FC = (props) => {
     return () => {
       clearTimeout(stateInterval);
     }
-  })
+  });
 
-  return state.show && state.artists? (
-    <div className={"spotify"}>
-      <img draggable={false} src={state.image} alt={"Song Graphic"}/>
-      <div className={"track"}>
-        <h1>{(state.songName.length < 25 ? state.songName : state.songName.substring(0,23) + "...")}</h1>
-        {state.artists.join(", ").length < 35 ? state.artists.join(", ") : state.artists.join(", ").substring(0,35) + "..."}<br/>
+  return Date.now() - state.time.getTime() < 3000
+    && state.artists
+    && state.isPlaying
+      ? (
+      <div className={"spotify"}>
+        <img draggable={false} src={state.image} alt={"Song Graphic"}/>
+        <div className={"track"}>
+          <h1>{(state.songName.length < 25 ? state.songName : state.songName.substring(0,23) + "...")}</h1>
+          {state.artists.join(", ").length < 35 ? state.artists.join(", ") : state.artists.join(", ").substring(0,35) + "..."}<br/>
+        </div>
+        <div className={"bar"}>
+          <Row>
+            <Col md={"auto"}>
+              {millisToMinutesAndSeconds(state.progress)}
+            </Col>
+            <Col>
+              <ProgressBar variant={"dark"}>
+                <ProgressBar variant={"success"} max={1} min={0} now={(state.progress/state.duration)}/>
+              </ProgressBar>
+            </Col>
+            <Col md={"auto"}>
+            {millisToMinutesAndSeconds(state.duration)}
+            </Col>
+          </Row>
+        </div>
       </div>
-      <div className={"bar"}>
-        <Row>
-          <Col md={"auto"}>
-            {millisToMinutesAndSeconds(state.progress)}
-          </Col>
-          <Col>
-            <ProgressBar variant={"dark"}>
-              <ProgressBar variant={"success"} max={1} min={0} now={(state.progress/state.duration)}/>
-            </ProgressBar>
-          </Col>
-          <Col md={"auto"}>
-          {millisToMinutesAndSeconds(state.duration)}
-          </Col>
-        </Row>
-      </div>
-    </div>
-  ) : null
+    ) : null
 }
 
 export default Spotify;

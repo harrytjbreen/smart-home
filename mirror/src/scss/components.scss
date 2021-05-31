@@ -17,21 +17,21 @@ body{
   border-radius: 1.5rem;
   display: grid;
   grid-gap: 1rem;
-  width: 30vw;
+  width: 35rem;
   min-width: fit-content;
   & img {
     width: 200px;
     height: 200px;
-    background-color: white;
     grid-column-start: 1;
     grid-row-start: 1;
   }
   & .track {
     grid-column-start: 2;
+    grid-column-end: 10;
   }
   & .bar {
     grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column-end: 10;
     grid-row-start: 2;
   }
 }
