@@ -19,7 +19,9 @@ interface State {
   isPlaying: boolean;
 }
 
-const Spotify: React.FC = (props) => {
+const SPOTIFY_URL = "http://192.168.1.100:5000";
+
+const Spotify: React.FC = () => {
 
   const [tokens, setTokens] = useState({} as Tokens);
   const [state, setState] = useState<State>({
@@ -69,16 +71,12 @@ const Spotify: React.FC = (props) => {
     }
 
     try {
-      const res = await axios.get("https://api.spotify.com/v1/me/player", {
+      let res = await axios.get("https://api.spotify.com/v1/me/player", {
         headers: {
           "Content-Type": "application/json",
           "Authorization": ` Bearer ${tokens.access}`
         }
       });
-      if(res.status === 401) {
-        //TODO refresh token if error
-        return;
-      }
       setState({
         duration: res.data?.item?.duration_ms,
         image: res.data?.item?.album.images[1].url,
@@ -89,13 +87,21 @@ const Spotify: React.FC = (props) => {
         isPlaying: res.data?.is_playing
       })
     } catch (err) {
-      console.log(err);
+      try {
+        console.log(tokens.refresh);
+        const res = await axios.post(`${SPOTIFY_URL}/refresh?refresh=${tokens.refresh}`)
+        if (res.status === 401) return;
+        setTokens({access: res.data.access, refresh: res.data.refresh})
+      }
+      catch (err) {
+        console.log(err);
+      }
     }
   }
 
   useEffect(() => {
-    const {access, refresh, expires} = parseParams(window.location.search);
-    if(access && refresh && expires) {
+    const {access, refresh} = parseParams(window.location.search);
+    if(access && refresh) {
       saveTokens({access, refresh});
       setTokens({access, refresh});
     }
