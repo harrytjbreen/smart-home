@@ -30,6 +30,7 @@ app.get("/current", async (req: Request, res: Response) => {
     const response = await axios.get(`${baseURL}/current.json?key=${apiKey}&q=${q}&aqi=yes`)
     const data = await response.data;
     res.json({
+      location: data.location.name,
       lastUpdated: data.current.last_updated_epoch,
       condition: data.current.condition,
       windMPH: data.current.wind_mph,

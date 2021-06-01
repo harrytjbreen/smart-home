@@ -3,6 +3,35 @@ body{
   color: white;
 }
 
+.weather {
+  display: flex;
+  flex-direction: column;
+  font-weight: lighter;
+  background-color: #1a1a1a;
+  padding: 1.5vw;
+  border-radius: 1.5rem;
+
+  > .weather-settings {
+    display: flex;
+    flex-direction: row;
+    align-self: flex-end;
+    margin-block: 0.25rem;
+  }
+
+  Button{
+    margin-inline: 1rem;
+  }
+
+  #location {
+    font-size: 2rem;
+  }
+
+  #temp {
+    font-size: 3rem;
+    font-weight: normal;
+  }
+}
+
 .draggable {
   position: absolute;
 }
