@@ -45,13 +45,6 @@ app.get("/callback", (req: Request, res: Response) => {
       .catch(err => console.log(err))
 });
 
-app.options('/refresh', (req: Request, res: Response) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader('Access-Control-Allow-Methods', '*');
-  res.setHeader("Access-Control-Allow-Headers", "*");
-  res.end();
-});
-
 app.post("/refresh", (req: Request, res: Response) => {
   const refresh = req.query.refresh;
   if(!refresh) {
