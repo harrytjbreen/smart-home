@@ -1,5 +1,6 @@
 import express, {Request, Response} from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 import axios from "axios";
 require("dotenv").config();
 
@@ -10,7 +11,15 @@ const apiKey = process.env.API_KEY;
 const baseURL = 'https://api.weatherapi.com/v1';
 
 app.use(bodyParser.json());
+app.use(cors());
 
+
+app.options('/current', (req: Request, res: Response) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.end();
+});
 app.get("/current", async (req: Request, res: Response) => {
   const q = req.query.q;
   if(!q) {
@@ -20,7 +29,6 @@ app.get("/current", async (req: Request, res: Response) => {
   try {
     const response = await axios.get(`${baseURL}/current.json?key=${apiKey}&q=${q}&aqi=yes`)
     const data = await response.data;
-    console.log(data)
     res.json({
       lastUpdated: data.current.last_updated_epoch,
       condition: data.current.condition,
