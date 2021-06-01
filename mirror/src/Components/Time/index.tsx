@@ -3,16 +3,16 @@ import {useEffect, useState} from "react";
 
 const Time: React.FC = () => {
 
-  const [time, setTime] = useState(Date.now);
+  const [time, setTime] = useState(new Date());
 
   useEffect(() => {
-    const updateTime = setInterval(() => setTime(Date.now), 1000);
+    const updateTime = setInterval(() => setTime(new Date()), 1000);
     return () => clearInterval(updateTime);
   },[])
 
   return (
     <div className={"time"}>
-      {new Date(time).toLocaleTimeString()}
+      {time.toLocaleTimeString()}
     </div>
   )
 }

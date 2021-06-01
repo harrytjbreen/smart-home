@@ -88,13 +88,13 @@ const Spotify: React.FC = () => {
       })
     } catch (err) {
       try {
-        console.log(tokens.refresh);
         const res = await axios.post(`${SPOTIFY_URL}/refresh?refresh=${tokens.refresh}`)
         if (res.status === 401) return;
+        saveTokens({access: res.data.access, refresh: res.data.refresh})
         setTokens({access: res.data.access, refresh: res.data.refresh})
       }
       catch (err) {
-        console.log(err);
+        setTimeout(getState, 1000);
       }
     }
   }
