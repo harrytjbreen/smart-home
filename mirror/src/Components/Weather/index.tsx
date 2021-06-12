@@ -17,6 +17,14 @@ interface WeatherData {
   windMPH: number
 }
 
+interface FutureData {
+  day: string;
+  tempHigh: number;
+  tempLow: number;
+  changeOfRain: number;
+  icon: string
+}
+
 const API = 'http://192.168.1.100:5002'
 
 const Weather: React.FC = () => {
@@ -44,12 +52,21 @@ const Weather: React.FC = () => {
 
   return !openSettings ? (
     <div className={"weather"} onDoubleClick={() => setOpenSettings(true)}>
-      <div id={"location"}>{data.location}</div>
-      <div id={"temp"}>{isCelsius ? data.feelsLikeC : data.feelsLikeF}°</div>
+      <div>
+        <div id={"location"}>{data.location}</div>
+        <div id={"temp"}>{isCelsius ? data.feelsLikeC : data.feelsLikeF}°</div>
+      </div>
+      { showForecast && <div>
+        {["Sun","Mon","Tue","Wed","Thu"].map((i) =>
+          <div>
+            {i}
+          </div>
+        )}
+      </div>}
     </div>
   ) : (
-    <div className={"weather"} style={{fontWeight: "normal"}} onDoubleClick={() => setOpenSettings(false)}>
-      <div className={"weather-settings"}>
+    <div className={"settings"} style={{fontWeight: "normal"}} onDoubleClick={() => setOpenSettings(false)}>
+      <div>
         Degree Units:
         <Toggle className={"Toggle"}
                 defaultChecked={isCelsius}

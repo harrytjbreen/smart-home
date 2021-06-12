@@ -3,19 +3,31 @@ body{
   color: white;
 }
 
-.weather {
+.settings {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
+  margin-block: 0.25rem;
+  background-color: #1a1a1a;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  > div {
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.weather {
+  display: flex;
   font-weight: lighter;
   background-color: #1a1a1a;
-  padding: 1.5vw;
   border-radius: 1.5rem;
+  flex-direction: row;
 
-  > .weather-settings {
-    display: flex;
-    flex-direction: row;
-    align-self: flex-end;
-    margin-block: 0.25rem;
+  > * {
+    padding: 1.5rem;
+    font-size: 1.5rem;
   }
 
   Button{
@@ -51,7 +63,7 @@ body{
   border-radius: 1.5rem;
   display: grid;
   grid-gap: 1rem;
-  width: 35rem;
+  width: 30rem;
   min-width: fit-content;
   & img {
     width: 200px;

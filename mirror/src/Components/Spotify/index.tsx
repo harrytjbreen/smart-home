@@ -1,7 +1,7 @@
 import * as React from "react";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {Col, ProgressBar, Row} from "react-bootstrap";
+import {Button, Col, ProgressBar, Row} from "react-bootstrap";
 
 interface Tokens {
   access: string;
@@ -19,7 +19,7 @@ interface State {
   isPlaying: boolean;
 }
 
-const SPOTIFY_URL = "http://192.168.1.100:5000";
+const URL = "http://192.168.1.100:5000";
 
 const Spotify: React.FC = () => {
 
@@ -33,6 +33,7 @@ const Spotify: React.FC = () => {
     songName: "",
     time: new Date(0)
   });
+  const [settingsPage, setSettingsPage] = useState(false);
 
   const parseParams = (querystring: string): Tokens => {
     const params = new URLSearchParams(querystring);
@@ -65,8 +66,8 @@ const Spotify: React.FC = () => {
   }
 
   const getState = async (): Promise<void> => {
-    if(!tokens.access){
-      loadTokens();
+    if(!tokens.access) {
+      setSettingsPage(true);
       return;
     }
 
@@ -77,24 +78,38 @@ const Spotify: React.FC = () => {
           "Authorization": ` Bearer ${tokens.access}`
         }
       });
-      setState({
+      if(res.data.is_playing)
+      setState(p => ({
         duration: res.data?.item?.duration_ms,
         image: res.data?.item?.album.images[1].url,
         progress: res.data?.progress_ms,
         songName: res.data?.item?.name,
         artists: res.data?.item?.artists.map((item: any) => item.name),
-        time: new Date(),
-        isPlaying: res.data?.is_playing
-      })
+        time: res.data?.is_playing ? new Date() : p.time,
+        isPlaying: res.data?.is_playing,
+      })); else {
+        if(Date.now() - state.time.getTime() > 3000 && state.songName !== "N/A") {
+          setState({
+            artists: ["N/A"],
+            duration: 0,
+            image: "",
+            isPlaying: false,
+            progress: 0,
+            songName: "N/A",
+            time: new Date(0),
+          })
+        }
+        const stateInterval = setTimeout(getState, 1000);
+      }
     } catch (err) {
       try {
-        const res = await axios.post(`${SPOTIFY_URL}/refresh?refresh=${tokens.refresh}`)
+        const res = await axios.post(`${URL}/refresh?refresh=${tokens.refresh}`)
         if (res.status === 401) return;
         saveTokens({access: res.data.access, refresh: res.data.refresh})
         setTokens({access: res.data.access, refresh: res.data.refresh})
       }
       catch (err) {
-        setTimeout(getState, 1000);
+        const stateInterval = setTimeout(getState, 250);
       }
     }
   }
@@ -103,24 +118,21 @@ const Spotify: React.FC = () => {
     const {access, refresh} = parseParams(window.location.search);
     if(access && refresh) {
       saveTokens({access, refresh});
-      setTokens({access, refresh});
     }
+    loadTokens({access, refresh});
   },[]);
 
   useEffect(() => {
-    const stateInterval = setTimeout(getState, 100);
+    const stateInterval = setTimeout(getState, 250);
 
     return () => {
       clearTimeout(stateInterval);
     }
   });
 
-  return Date.now() - state.time.getTime() < 3000
-    && state.artists
-    && state.isPlaying
-      ? (
-      <div className={"spotify"}>
-        <img draggable={false} src={state.image} alt={"Song Graphic"}/>
+  return !settingsPage ?
+      <div onDoubleClick={() => setSettingsPage(true)} className={"spotify"}>
+        {state.image && <img draggable={false} src={state.image} alt={"Song Graphic"}/>}
         <div className={"track"}>
           <h1>{(state.songName.length < 25 ? state.songName : state.songName.substring(0,23) + "...")}</h1>
           {state.artists.join(", ").length < 35 ? state.artists.join(", ") : state.artists.join(", ").substring(0,35) + "..."}<br/>
@@ -132,7 +144,7 @@ const Spotify: React.FC = () => {
             </Col>
             <Col>
               <ProgressBar variant={"dark"}>
-                <ProgressBar variant={"success"} max={1} min={0} now={(state.progress/state.duration)}/>
+                <ProgressBar variant={"success"} max={1} min={0} now={state.duration !== 0 ? (state.progress/state.duration) : 1}/>
               </ProgressBar>
             </Col>
             <Col md={"auto"}>
@@ -141,7 +153,10 @@ const Spotify: React.FC = () => {
           </Row>
         </div>
       </div>
-    ) : null
+    :
+    <div className={"settings"} onDoubleClick={() => setSettingsPage(false)}>
+      <a href={`${URL}/login`}><Button variant={"outline-success"}>Login to Spotify</Button></a>
+    </div>
 }
 
 export default Spotify;
